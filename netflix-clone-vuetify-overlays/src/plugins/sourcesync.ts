@@ -5,7 +5,7 @@ import type { Plugin } from 'vue'
 // Initialize the SourceSync app
 const app = await initializeApp({
   appKey: import.meta.env.VITE_SOURCESYNC_APP_KEY,
-  env: 'dev',
+  env: import.meta.env.VITE_SOURCESYNC_MODE,
 })
 
 // Create and export the functions from render-activation-web
