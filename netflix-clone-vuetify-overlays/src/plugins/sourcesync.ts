@@ -1,5 +1,5 @@
-import { initializeApp } from '@sourcesync-sdk/app'
-import { createActivationView, useSmartblockRenderer } from '@sourcesync-sdk/render-activation-web'
+import { initializeApp } from 'sourcesync-sdk/app'
+import { createExperience as _createExperience, type CreateExperienceViewOptions } from 'sourcesync-sdk/render-experience-web'
 import type { Plugin } from 'vue'
 
 // Initialize the SourceSync app
@@ -8,11 +8,7 @@ const app = await initializeApp({
   env: import.meta.env.VITE_SOURCESYNC_MODE,
 })
 
-// Create and export the functions from render-activation-web
-export const activationView = (activation: any, options: any) =>
-  createActivationView(app, activation, options)
-
-export { useSmartblockRenderer }
+export const createExperience = (options: CreateExperienceViewOptions): ReturnType<typeof _createExperience> => _createExperience(app, options)
 
 // Define the plugin
 const sourcesyncPlugin: Plugin = {
