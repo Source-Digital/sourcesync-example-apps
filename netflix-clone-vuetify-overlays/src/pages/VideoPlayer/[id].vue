@@ -7,10 +7,6 @@
         :poster="video.thumbnail"
         :src="video.videoUrl"
       />
-      <div
-        ref="overlayRef"
-        class="position-absolute top-0 start-0 w-100 h-100"
-      />
       <v-btn
         class="m-4"
         color="primary"
@@ -25,7 +21,7 @@
 <script setup lang="ts">
   import { onMounted, onUnmounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import { activationView, useSmartblockRenderer } from '../../plugins/sourcesync'
+  import { createExperience } from '../../plugins/sourcesync'
 
   const route = useRoute()
 
@@ -37,7 +33,6 @@
     videoUrl: '',
   })
   const videoRef = ref<HTMLVideoElement | null>(null)
-  const overlayRef = ref<HTMLDivElement | null>(null)
   const isPlaying = ref(false)
 
   const handlePlayPause = () => {
@@ -51,6 +46,8 @@
     }
   }
 
+  let experienceView: any
+
   onMounted(async () => {
     const id = route.params.id as string
     // In a real app, fetch video details from your backend here
@@ -61,21 +58,15 @@
       thumbnail: `https://picsum.photos/300/200?random=${id}`,
       videoUrl: 'https://storage.googleapis.com/cdn.sourcesync.io/videos/Frecon%20Farms%20Preview_1.mp4',
     }
+    const { experience } = await createExperience({
+      distribution: { id: '56614' },
+      targetEl: videoRef.value,
+    })
+    experienceView = experience
+    experience.init()
+  })
 
-    if (videoRef.value && overlayRef.value) {
-      const view = activationView(
-        { distribution: { id: '56614' } },
-        {
-          el: overlayRef.value,
-          renderer: useSmartblockRenderer({}),
-        }
-      )
-
-      view.mount()
-
-      onUnmounted(() => {
-        view.unmount()
-      })
-    }
+  onUnmounted(() => {
+    experienceView?.destroy()
   })
 </script>
